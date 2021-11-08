@@ -4,7 +4,6 @@ import requests
 import tkinter as tk
 
 
-
 class stockInfo:
     def __init__(self, stockInd):
         self._priceList = list()
@@ -20,17 +19,19 @@ class stockInfo:
         return self._name
 
     def add_price(self, price, time):
-        # if no current data, use starting price to replace 
+        
         if price == '-':
             price = None
-        
-        self._priceList.append(float(price))
+        else :
+            price = float(price)
+            
+        self._priceList.append(price)
         self._timeList.append(time)
 
     def plot_cur_data(self, plotTargetFrame):
         fig = plt.figure()
         axis1 = fig.add_subplot(111)
-        axis1.plot(range(1,6), self._priceList)
+        axis1.plot(self._timeList, self._priceList)
         
         for item in plotTargetFrame.winfo_children():
             item.destroy()
@@ -45,8 +46,8 @@ class stockInfo:
     def create_button(self, buttonTargetFrame, plotTargetFrame):
         tmpButton = tk.Button(buttonTargetFrame, 
                               text = self._name, 
-                              command = lambda : self.plot_cur_data(plotTargetFrame)
-                              )
+                              command = lambda : self.plot_cur_data(plotTargetFrame),
+                             )
         tmpButton.grid()
     
     def get_ind(self):
@@ -60,6 +61,13 @@ class dataBase:
     def __init__(self, sourceUrl):
         self._dataDict = dict()
         self._sourceUrl = sourceUrl
+
+    def gen_fake_data(self):
+        for sInd in self._dataDict:
+            self._dataDict[sInd] = stockInfo(sInd)
+            self._dataDict[sInd]._priceList = [11 + int(sInd), 5 + int(sInd), 7 + int(sInd), 9 + int(sInd), 8 + int(sInd)]
+            self._dataDict[sInd]._timeList = [11, 5, 7, 9, 8]
+            self._dataDict[sInd]._name = sInd
 
     def add_stock_member(self, sIndList):
         for sInd in sIndList:

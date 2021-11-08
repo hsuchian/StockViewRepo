@@ -18,16 +18,22 @@ if __name__ == '__main__':
 
     TotalStockData = dataBase(sourceUrl)    
     TotalStockData.add_stock_member(monitorStock)
-    TotalStockData.set_name_for_stock()    
 
-    for i in range(0, 5):
-        print("Update data")
-        TotalStockData.get_data_from_server()
-        #time.sleep(1)
+    internet = 1
+    if internet:
+        TotalStockData.set_name_for_stock()    
+    else:
+        TotalStockData.gen_fake_data()
+
+    if internet:
+        for i in range(0, 5):
+            print("Update data")
+            TotalStockData.get_data_from_server()
+            time.sleep(5)
 
     GUIMgr = guiMgr()
 
     # add button
-    #TotalStockData.create_button(GUIMgr._buttonFrame, GUIMgr._plotFrame)
+    TotalStockData.create_button(GUIMgr._buttonFrame, GUIMgr._plotFrame)
 
     GUIMgr._window.mainloop()
