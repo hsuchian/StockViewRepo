@@ -12,3 +12,6 @@ a = list()
 a = [ 1,2]
 if a:
     print("a is not empty")
+
+
+fuck
