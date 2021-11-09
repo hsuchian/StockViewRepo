@@ -7,7 +7,6 @@ from guiImplement import *
 import json
 import time
 
-
 # The name will be file name parser_for_stock if this file was imported by
 # other file, so the below code will not be executed
 # The name will be __main__ if this file was exectued directly
@@ -25,15 +24,14 @@ if __name__ == '__main__':
     else:
         TotalStockData.gen_fake_data()
 
-    if internet:
-        for i in range(0, 5):
-            print("Update data")
-            TotalStockData.get_data_from_server()
-            time.sleep(5)
-
     GUIMgr = guiMgr()
+
+
+    if internet:
+        print("Update data")
+        TotalStockData.get_data_from_server(GUIMgr)
+
 
     # add button
     TotalStockData.create_button(GUIMgr._buttonFrame, GUIMgr._plotFrame)
-
     GUIMgr._window.mainloop()

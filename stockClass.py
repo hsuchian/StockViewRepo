@@ -2,6 +2,7 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import matplotlib.pyplot as plt
 import requests
 import tkinter as tk
+import datetime 
 
 
 class stockInfo:
@@ -18,21 +19,31 @@ class stockInfo:
     def get_name(self):
         return self._name
 
+
     def add_price(self, price, time):
         
         if price == '-':
             price = None
-        else :
+        else:
             price = float(price)
-            
+        
+        now = datetime.datetime.now()
+        timeStructTmp = datetime.datetime.strptime(time, "%H:%M:%S")
+        timeStructTmp = timeStructTmp.replace(now.year, now.month, now.day)
+
+        # add the time for 6 sec if the time fixed at 13:30, not a very good solution
+        if self._timeList and timeStructTmp in self._timeList:
+            timeStructTmp = self._timeList[-1] + datetime.timedelta(seconds = 5)
+
         self._priceList.append(price)
-        self._timeList.append(time)
+        self._timeList.append(timeStructTmp)
 
     def plot_cur_data(self, plotTargetFrame):
+
         fig = plt.figure()
         axis1 = fig.add_subplot(111)
-        axis1.plot(self._timeList, self._priceList)
-        
+        axis1.plot(self._timeList, self._priceList, '*-b')
+
         for item in plotTargetFrame.winfo_children():
             item.destroy()
 
@@ -76,21 +87,25 @@ class dataBase:
     def get_dataDict(self):
         return self._dataDict
 
-    def get_data_from_server(self):   #dataBase should be a dictionary
-    
+    def get_data_from_server(self, GUIMgr):   #dataBase should be a dictionary
+        
         #data = {'ex_ch': '|'.join(['tse_{}.tw'.format(stockInd) for stockInd in monitorStock]), 'json': '1'}
         data = {'ex_ch': '|'.join([self._dataDict[sInd].get_query_str() for sInd in self._dataDict]), 'json': '1'}
 
         res = requests.get(self._sourceUrl, params = data)
         res = (res.json())['msgArray']
         
+        sTimetmp = None
         for sInfoServer in res:
             sPrice = sInfoServer['z']
             sInd = sInfoServer['c']
-            sTime = sInfoServer['t']
+            sTimetmp = sTime = sInfoServer['t']
             
             self._dataDict[sInd].add_price(sPrice, sTime)
-            #print("{0:8.4f}  {1:s}".format(float(stockInfo['z']), stockInfo['n']))      
+            #print("{0:8.4f}  {1:s}".format(float(stockInfo['z']), stockInfo['n']))     
+        
+        print("Update data from server " + sTime)
+        GUIMgr._window.after(5000, self.get_data_from_server, GUIMgr)
 
     def set_name_for_stock(self):
         data = {'ex_ch': '|'.join([self._dataDict[sInd].get_query_str() for sInd in self._dataDict]), 'json': '1'}
