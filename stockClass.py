@@ -4,7 +4,6 @@ import requests
 import tkinter as tk
 import datetime 
 
-
 class stockInfo:
     def __init__(self, stockInd):
         self._priceList = list()
@@ -18,7 +17,6 @@ class stockInfo:
     
     def get_name(self):
         return self._name
-
 
     def add_price(self, price, time):
         
@@ -53,7 +51,6 @@ class stockInfo:
         plotTargetFrame.rowconfigure(index = 0, weight = 1)
         plotTargetFrame.columnconfigure(index = 0, weight =1)
 
-    
     def create_button(self, buttonTargetFrame, plotTargetFrame):
         tmpButton = tk.Button(buttonTargetFrame, 
                               text = self._name, 
@@ -72,6 +69,7 @@ class dataBase:
     def __init__(self, sourceUrl):
         self._dataDict = dict()
         self._sourceUrl = sourceUrl
+        self._curStockInd = None
 
     def gen_fake_data(self):
         for sInd in self._dataDict:
@@ -83,6 +81,8 @@ class dataBase:
     def add_stock_member(self, sIndList):
         for sInd in sIndList:
             self._dataDict[sInd] = stockInfo(sInd)
+        if sIndList:   # check if list is not empty
+            self._curStockInd = sIndList[0]
 
     def get_dataDict(self):
         return self._dataDict
@@ -106,6 +106,9 @@ class dataBase:
         
         print("Update data from server " + sTime)
         GUIMgr._window.after(5000, self.get_data_from_server, GUIMgr)
+        # update the figure for the current figure
+        self._dataDict[self._curStockInd].plot_cur_data(GUIMgr._plotFrame)
+
 
     def set_name_for_stock(self):
         data = {'ex_ch': '|'.join([self._dataDict[sInd].get_query_str() for sInd in self._dataDict]), 'json': '1'}
