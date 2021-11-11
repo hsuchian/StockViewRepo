@@ -33,6 +33,9 @@ class guiMgr:
     def init_cur_stock(self, sInd):
         self._currentStock = sInd
 
+    def get_cur_stock_ind(self):
+        return self._currentStock
+
     def create_button_by_stock_name_list(self, stockDataBase):
         
         sDataDict = stockDataBase.get_dataDict()
