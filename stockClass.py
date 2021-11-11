@@ -46,10 +46,10 @@ class stockInfo:
         return self._name
 
 class dataBase:
-    def __init__(self, sourceUrl):
+    def __init__(self, sourceUrl, monitorStock):
         self._dataDict = dict()
         self._sourceUrl = sourceUrl
-        self._curStockInd = None
+        self.add_stock_member(monitorStock)
 
     def gen_fake_data(self):
         for sInd in self._dataDict:

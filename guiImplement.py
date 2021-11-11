@@ -3,7 +3,6 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import matplotlib.pyplot as plt
 
 
-
 class guiMgr:
     def __init__(self, ):
 
@@ -29,34 +28,43 @@ class guiMgr:
         self._window = window
         self._plotFrame = plotFrame
         self._buttonFrame = buttonFrame
+        self._currentStock = None
+
+    def init_cur_stock(self, sInd):
+        self._currentStock = sInd
 
     def create_button_by_stock_name_list(self, stockDataBase):
-        for stockName in stockDataBase.get_dataDict():
-            self.create_button(stockName)
+        
+        sDataDict = stockDataBase.get_dataDict()
+        for stockInd in sDataDict:
+            sData = sDataDict[stockInd]
+            #print(sData.get_name(), sData.get_price_list(), sData.get_time_list())
+            self.create_button(sData.get_name(), sData.get_price_list(), sData.get_time_list())
 
-    def create_button(self, stockName):
+    def create_button(self, stockName, stockPriceList, stockTimeList):
         tmpButton = tk.Button(self._buttonFrame, 
                               text = stockName, 
-                              command = lambda : self.plot_cur_data()
+                              command = lambda : self.plot_data(stockTimeList, stockPriceList)
                              )
         tmpButton.grid()
 
 
-    def plot_cur_data(self, timeList, priceList):
+    def plot_data(self, timeList, priceList):
 
         fig = plt.figure()
         axis1 = fig.add_subplot(111)
         axis1.plot(timeList, priceList, '*-b')
 
-        for item in plotTargetFrame.winfo_children():
+        for item in self._plotFrame.winfo_children():
             item.destroy()
 
-        canvas = FigureCanvasTkAgg(fig, master=plotTargetFrame)  # A tk.DrawingArea.
+        canvas = FigureCanvasTkAgg(fig, master=self._plotFrame)  # A tk.DrawingArea.
         canvas.draw()
         canvas.get_tk_widget().grid(row = 0, column = 0)
-        plotTargetFrame.rowconfigure(index = 0, weight = 1)
-        plotTargetFrame.columnconfigure(index = 0, weight =1)
+        self._plotFrame.rowconfigure(index = 0, weight = 1)
+        self._plotFrame.columnconfigure(index = 0, weight =1)
 
-    def create_button(self, buttonTargetFrame, plotTargetFrame):
-        for stockInd in self._dataDict:
-            self._dataDict[stockInd].create_button(buttonTargetFrame, plotTargetFrame)
+
+if __name__ == '__main__':
+    print('Cannot execute this file directly')
+    exit(-1)
