@@ -9,7 +9,7 @@ class stockInfo:
         self._stockInd = stockInd
         self._name = None
 
-    def add_price(self, price, time):
+    def add_price_time(self, price, time):
         
         if price == '-':
             price = None
@@ -51,27 +51,13 @@ class dataBase:
         self._sourceUrl = sourceUrl
         self.add_stock_member(monitorStock)
 
-    def gen_fake_data(self):
-        for sInd in self._dataDict:
-            self._dataDict[sInd] = stockInfo(sInd)
-            self._dataDict[sInd]._priceList = [11 + int(sInd), 5 + int(sInd), 7 + int(sInd), 9 + int(sInd), 8 + int(sInd)]
-            self._dataDict[sInd]._timeList = [11, 5, 7, 9, 8]
-            self._dataDict[sInd]._name = sInd
-
     def add_stock_member(self, sIndList):
         for sInd in sIndList:
             self._dataDict[sInd] = stockInfo(sInd)
-        if sIndList:   # check if list is not empty
-            self._curStockInd = sIndList[0]
-
-    def get_dataDict(self):
-        return self._dataDict
 
     def get_data_from_server(self):   #dataBase should be a dictionary
         
-        #data = {'ex_ch': '|'.join(['tse_{}.tw'.format(stockInd) for stockInd in monitorStock]), 'json': '1'}
         data = {'ex_ch': '|'.join([self._dataDict[sInd].get_query_str() for sInd in self._dataDict]), 'json': '1'}
-
         res = requests.get(self._sourceUrl, params = data)
         res = (res.json())['msgArray']
         
@@ -81,8 +67,7 @@ class dataBase:
             sInd = sInfoServer['c']
             sTimetmp = sTime = sInfoServer['t']
             
-            self._dataDict[sInd].add_price(sPrice, sTime)
-            #print("{0:8.4f}  {1:s}".format(float(stockInfo['z']), stockInfo['n']))     
+            self._dataDict[sInd].add_price_time(sPrice, sTime)
         
         print("Update data from server " + sTime)
 
@@ -99,6 +84,22 @@ class dataBase:
             sInd = sInfoServer['c']
             self._dataDict[sInd].set_name(sName)
 
+    def get_dataDict(self):
+        return self._dataDict
+
+    def gen_fake_data(self):
+        for sInd in self._dataDict:
+            self._dataDict[sInd] = stockInfo(sInd)
+            self._dataDict[sInd]._priceList = [11 + int(sInd), 5 + int(sInd), 7 + int(sInd), 9 + int(sInd), 8 + int(sInd)]
+            self._dataDict[sInd]._timeList = [11, 5, 7, 9, 8]
+            self._dataDict[sInd]._name = sInd
+
 if __name__ == '__main__':
     print('Cannot execute this file directly')
     exit(-1)
+
+
+
+# --------------------------------- useful code ------------------------
+#data = {'ex_ch': '|'.join(['tse_{}.tw'.format(stockInd) for stockInd in monitorStock]), 'json': '1'}
+#print("{0:8.4f}  {1:s}".format(float(stockInfo['z']), stockInfo['n']))     
