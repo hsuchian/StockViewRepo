@@ -16,7 +16,7 @@ class guiMgr:
         buttonFrame = tk.Frame(window, width=w*1/3 , height=h, bg='green')
         #div3 = tk.Frame(window,  width=div_size , height=div_size , bg='blue')
 
-        plotFrame.grid(row = 0, column = 0,)
+        plotFrame.grid(row = 0, column = 0)
         buttonFrame.grid(row = 0, column = 1)
 
         window.rowconfigure(index = 0, weight = 2)
@@ -30,30 +30,29 @@ class guiMgr:
         self._buttonFrame = buttonFrame
         self._currentStock = None
 
-    def init_cur_stock(self, sInd):
-        self._currentStock = sInd
-
-    def get_cur_stock_ind(self):
-        return self._currentStock
-
     def create_button_by_stock_name_list(self, stockDataBase):
         
         sDataDict = stockDataBase.get_dataDict()
         for stockInd in sDataDict:
             sData = sDataDict[stockInd]
-            #print(sData.get_name(), sData.get_price_list(), sData.get_time_list())
-            self.create_button(sData.get_name(), sData.get_price_list(), sData.get_time_list())
+            self.create_button(sData)
 
-    def create_button(self, stockName, stockPriceList, stockTimeList):
+    def create_button(self, sData):
         tmpButton = tk.Button(self._buttonFrame, 
-                              text = stockName, 
-                              command = lambda : self.plot_data(stockTimeList, stockPriceList)
+                              text = sData.get_name(), 
+                              command = lambda : self.button_action(sData)
                              )
         tmpButton.grid()
 
+    def button_action(self, sData):
+        self._currentStock = sData.get_ind_str()
+        self.plot_data(sData)
 
-    def plot_data(self, timeList, priceList):
+    def plot_data(self, sData):
 
+        timeList = sData.get_time_list() 
+        priceList = sData.get_price_list()
+        
         fig = plt.figure()
         axis1 = fig.add_subplot(111)
         axis1.plot(timeList, priceList, '*-b')
@@ -64,8 +63,16 @@ class guiMgr:
         canvas = FigureCanvasTkAgg(fig, master=self._plotFrame)  # A tk.DrawingArea.
         canvas.draw()
         canvas.get_tk_widget().grid(row = 0, column = 0)
+    
         self._plotFrame.rowconfigure(index = 0, weight = 1)
         self._plotFrame.columnconfigure(index = 0, weight =1)
+
+    def init_cur_stock(self, sInd):
+        self._currentStock = sInd
+
+    def get_cur_stock_ind(self):
+        return self._currentStock
+
 
 
 if __name__ == '__main__':

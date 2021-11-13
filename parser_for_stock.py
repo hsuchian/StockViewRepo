@@ -11,8 +11,9 @@ import time
 def start_update_5_sec(GUImgr, TotalStockData):
     TotalStockData.get_data_from_server()
     sdataDict = TotalStockData.get_dataDict()
+
     curStockInd = GUIMgr.get_cur_stock_ind()
-    GUIMgr.plot_data(sdataDict[curStockInd].get_time_list(), sdataDict[curStockInd].get_price_list())
+    GUIMgr.plot_data(sdataDict[curStockInd])
     GUIMgr._window.after(5000, start_update_5_sec, GUIMgr, TotalStockData)
 
 
@@ -25,18 +26,20 @@ if __name__ == '__main__':
     monitorStock = ['2330', '2454', '0050', '0056', '00878']
 
     internet = 1
+    if not internet:
+        exit(-1)
 
     # database and GUI initialization
-    GUIMgr = guiMgr()
     TotalStockData = dataBase(sourceUrl, monitorStock)
-    GUIMgr.init_cur_stock(monitorStock[0])
+    TotalStockData.set_name_for_stock()
 
-    if internet: TotalStockData.set_name_for_stock()    
-    else:  TotalStockData.gen_fake_data()
+    GUIMgr = guiMgr()
+    GUIMgr.init_cur_stock(monitorStock[0])    
 
-    # add button
+    # add button, should after the dataBase initialization
+    # since the button number and action fcn is decided by 
+    # stock info
     GUIMgr.create_button_by_stock_name_list(TotalStockData)
-        #if internet: TotalStockData.get_data_from_server()
 
     
     start_update_5_sec(GUIMgr, TotalStockData)
