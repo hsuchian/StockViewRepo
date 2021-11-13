@@ -23,7 +23,7 @@ def start_update_5_sec(GUImgr, TotalStockData):
 if __name__ == '__main__':
     # basic definition
     sourceUrl = "https://mis.twse.com.tw/stock/api/getStockInfo.jsp"
-    monitorStock = ['2330', '2454', '0050', '0056', '00878']
+    monitorStock = ['2330', '2454', '0050', '0056', '00878', '2603', '2886']
 
     internet = 1
     if not internet:

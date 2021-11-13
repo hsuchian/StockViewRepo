@@ -21,14 +21,20 @@ class guiMgr:
 
         window.rowconfigure(index = 0, weight = 2)
         window.rowconfigure(index = 1, weight = 1)
+
         window.columnconfigure(index = 0, weight = 1)  
         window.columnconfigure(index = 1, weight = 1)
+
+        window.bind("<Configure>", self.resize_function)
 
         # class member
         self._window = window
         self._plotFrame = plotFrame
         self._buttonFrame = buttonFrame
         self._currentStock = None
+
+    def resize_function(newWidth, newLen):    # resize function when
+        print('Hello' + str(newWidth) + ' ' + str(newLen))
 
     def create_button_by_stock_name_list(self, stockDataBase):
         
@@ -53,7 +59,7 @@ class guiMgr:
         timeList = sData.get_time_list() 
         priceList = sData.get_price_list()
         
-        fig = plt.figure()
+        fig = plt.figure(figsize=(8,6))  # difined in inches
         axis1 = fig.add_subplot(111)
         axis1.plot(timeList, priceList, '*-b')
 
@@ -78,3 +84,9 @@ class guiMgr:
 if __name__ == '__main__':
     print('Cannot execute this file directly')
     exit(-1)
+
+
+
+
+# ------------------- reference -------------------------------
+# https://web.archive.org/web/20201111211515id_/https://effbot.org/tkinterbook/tkinter-events-and-bindings.htm
