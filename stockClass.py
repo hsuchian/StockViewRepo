@@ -11,9 +11,8 @@ class stockInfo:
 
     def add_price_time(self, price, time):
 
-        # add the time for 6 sec if the time fixed at 13:30, not a very good solution
-        if self._timeList and time in self._timeList:
-            time = self._timeList[-1] + datetime.timedelta(seconds = 5)
+        if self._priceList and price == None:
+            price = self._priceList[-1]
 
         self._priceList.append(price)
         self._timeList.append(time)
@@ -65,11 +64,7 @@ class dataBase:
         else: 
             price = float(oriStockPrice)
 
-        now = datetime.datetime.now()
-        timeStructTmp = datetime.datetime.strptime(oriStockTime, "%H:%M:%S")
-        timeStructTmp = timeStructTmp.replace(now.year, now.month, now.day)
-
-        return price, timeStructTmp
+        return price, oriStockTime
 
     def get_data_from_server(self):   #dataBase should be a dictionary
         
@@ -77,17 +72,20 @@ class dataBase:
         res = requests.get(self._sourceUrl, params = data)
         res = (res.json())['msgArray']
         
-        sTimetmp = None
+        now = datetime.datetime.now()
+
         for sInfoServer in res:
             sPrice = sInfoServer['z']               # str of price or '-'
             sInd = sInfoServer['c']                 # str of stockInd
-            sTimetmp = sTime = sInfoServer['t']     # str of HH:MM:SS
+            sTime = now                             # use the current time instead of serve time
+                                                    # since if there is no update, the time will 
+                                                    # be the same for that stock
             
             # return floting sPrice and datetime.datetime struct sTime
             sPrice, sTime = self.server_data_preprocess(sPrice, sTime)
             self._dataDict[sInd].add_price_time(sPrice, sTime)
         
-        print("Update data from server " + sTimetmp)
+        print("Update data from server " + now.strftime("%H:%M:%S"))
 
 
     def get_dataDict(self):
@@ -108,5 +106,17 @@ if __name__ == '__main__':
 
 
 # --------------------------------- useful code ------------------------
-#data = {'ex_ch': '|'.join(['tse_{}.tw'.format(stockInd) for stockInd in monitorStock]), 'json': '1'}
-#print("{0:8.4f}  {1:s}".format(float(stockInfo['z']), stockInfo['n']))     
+'''data = {'ex_ch': '|'.join(['tse_{}.tw'.format(stockInd) for stockInd in monitorStock]), 'json': '1'}
+   print("{0:8.4f}  {1:s}".format(float(stockInfo['z']), stockInfo['n']))     
+
+
+
+        now = datetime.datetime.now()
+        timeStructTmp = datetime.datetime.strptime(oriStockTime, "%H:%M:%S")
+        timeStructTmp = timeStructTmp.replace(now.year, now.month, now.day)
+
+
+        # add the time for 6 sec if the time fixed at 13:30, not a very good solution
+        if self._timeList and time in self._timeList:
+            time = self._timeList[-1] + datetime.timedelta(seconds = 5)
+'''

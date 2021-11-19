@@ -34,7 +34,8 @@ class guiMgr:
         self._currentStock = None
 
     def resize_function(newWidth, newLen):    # resize function when
-        print('Hello' + str(newWidth) + ' ' + str(newLen))
+        #print('Hello' + str(newWidth) + ' ' + str(newLen))
+        x = 10
 
     def create_button_by_stock_name_list(self, stockDataBase):
         
