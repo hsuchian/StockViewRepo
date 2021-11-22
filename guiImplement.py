@@ -70,6 +70,9 @@ class guiMgr:
         canvas = FigureCanvasTkAgg(fig, master=self._plotFrame)  # A tk.DrawingArea.
         canvas.draw()
         canvas.get_tk_widget().grid(row = 0, column = 0)
+        
+        # shoulde close the fig explicitly
+        plt.close(fig)
     
         self._plotFrame.rowconfigure(index = 0, weight = 1)
         self._plotFrame.columnconfigure(index = 0, weight =1)
