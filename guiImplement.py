@@ -74,6 +74,8 @@ class guiMgr:
         self._plotFrame.rowconfigure(index = 0, weight = 1)
         self._plotFrame.columnconfigure(index = 0, weight =1)
 
+        plt.close()
+
     def init_cur_stock(self, sInd):
         self._currentStock = sInd
 
