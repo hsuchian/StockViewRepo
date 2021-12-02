@@ -37,14 +37,14 @@ class guiMgr:
         #print('Hello' + str(newWidth) + ' ' + str(newLen))
         x = 10
 
-    def create_button_by_stock_name_list(self, stockDataBase):
+    def create_button_by_stock_name_list(self, stockDataBase):  # mutable object type, call by reference for stockDataBase
         
         sDataDict = stockDataBase.get_dataDict()
         for stockInd in sDataDict:
             sData = sDataDict[stockInd]
             self.create_button(sData)
 
-    def create_button(self, sData):
+    def create_button(self, sData):   # already create local variable for sData, so no problem using lambda
         tmpButton = tk.Button(self._buttonFrame, 
                               text = sData.get_name(), 
                               command = lambda : self.button_action(sData)
