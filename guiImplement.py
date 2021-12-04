@@ -96,3 +96,17 @@ if __name__ == '__main__':
 
 # ------------------- reference -------------------------------
 # https://web.archive.org/web/20201111211515id_/https://effbot.org/tkinterbook/tkinter-events-and-bindings.htm
+
+
+'''
+
+def start_update_5_sec(GUIMgr, TotalStockData):
+    TotalStockData.get_data_from_server()
+    sdataDict = TotalStockData.get_dataDict()
+
+    curStockInd = GUIMgr.get_cur_stock_ind()
+    GUIMgr.plot_data(sdataDict[curStockInd])
+    GUIMgr._window.after(5000, start_update_5_sec, GUIMgr, TotalStockData)
+
+
+'''
