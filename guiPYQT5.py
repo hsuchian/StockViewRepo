@@ -10,28 +10,28 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
+
 from stockClass import *
 
 
-class Ui_MainWindow(object):   # this is inheritance from object
+class Ui_MainWindow(object):   # this is inheritance from object, but does object needed??
 
     def __init__(self, sourceUrl, monitorStock):
         self._mainWindow = QtWidgets.QMainWindow()
         self._currentStock = monitorStock[0]
         self._stockDataBase = None
-        
-
-        self.setupUi()
+    
+        self.setupBasicUi()
         self.dataBaseInit(sourceUrl, monitorStock)
         self.guiInit()
-
-    def guiInit(self):
-        self.create_button_by_stock_database(self._stockDataBase)   
 
     def dataBaseInit(self, sourceUrl, monitorStock):
         self._stockDataBase = dataBase(sourceUrl, monitorStock)
         self._stockDataBase.set_name_for_stock()
         #self._stockDataBase.get_data_from_server()
+
+    def guiInit(self):
+        self.create_button_by_stock_database(self._stockDataBase)   
 
     def updateFcn(self):
         self._stockDataBase.get_data_from_server()
@@ -66,7 +66,7 @@ class Ui_MainWindow(object):   # this is inheritance from object
 
     def create_button(self, sData, buttonInd):
 
-        self.pushButton = QtWidgets.QPushButton(self.centralwidget)
+        self.pushButton = QtWidgets.QPushButton(self._centralwidget)
         self.pushButton.setGeometry(QtCore.QRect(870, 50*buttonInd + 50, 151, 31))
         self.pushButton.setObjectName("pushButton" + sData.get_name())
 
@@ -85,30 +85,31 @@ class Ui_MainWindow(object):   # this is inheritance from object
             self.create_button(sData, buttonInd)
             buttonInd += 1
 
-    def setupUi(self):
+    def setupBasicUi(self):
         self._mainWindow.setObjectName("StockView")
         self._mainWindow.resize(1136, 797)
 
-        self.centralwidget = QtWidgets.QWidget(self._mainWindow)
-        self.centralwidget.setObjectName("centralwidget")
+        self._centralwidget = QtWidgets.QWidget(self._mainWindow)
+        self._centralwidget.setObjectName("centralwidget")
 
-        self.graphicsView = QtWidgets.QGraphicsView(self.centralwidget)
-        self.graphicsView.setGeometry(QtCore.QRect(30, 60, 781, 611))
-        self.graphicsView.setObjectName("graphicsView")
+        self._graphicsView = QtWidgets.QGraphicsView(self._centralwidget)
+        self._graphicsView.setGeometry(QtCore.QRect(30, 60, 781, 611))
+        self._graphicsView.setObjectName("graphicsView")
 
 
-        self.label = QtWidgets.QLabel(self.centralwidget)
-        self.label.setGeometry(QtCore.QRect(30, 20, 161, 31))
-        self.label.setObjectName("label")
+        self._label = QtWidgets.QLabel(self._centralwidget)
+        self._label.setGeometry(QtCore.QRect(30, 20, 161, 31))
+        self._label.setObjectName("label")
         
-        self._mainWindow.setCentralWidget(self.centralwidget)
-        self.menubar = QtWidgets.QMenuBar(self._mainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 1136, 25))
-        self.menubar.setObjectName("menubar")
-        self._mainWindow.setMenuBar(self.menubar)
-        self.statusbar = QtWidgets.QStatusBar(self._mainWindow)
-        self.statusbar.setObjectName("statusbar")
-        self._mainWindow.setStatusBar(self.statusbar)
+        self._mainWindow.setCentralWidget(self._centralwidget)
+        self._menubar = QtWidgets.QMenuBar(self._mainWindow)
+        self._menubar.setGeometry(QtCore.QRect(0, 0, 1136, 25))
+        self._menubar.setObjectName("menubar")
+        self._mainWindow.setMenuBar(self._menubar)
+
+        self._statusbar = QtWidgets.QStatusBar(self._mainWindow)
+        self._statusbar.setObjectName("statusbar")
+        self._mainWindow.setStatusBar(self._statusbar)
 
         self.retranslateUi()
         QtCore.QMetaObject.connectSlotsByName(self._mainWindow)
@@ -116,7 +117,7 @@ class Ui_MainWindow(object):   # this is inheritance from object
     def retranslateUi(self):
         _translate = QtCore.QCoreApplication.translate
         self._mainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
-        self.label.setText(_translate("MainWindow", "TextLabel"))
+        self._label.setText(_translate("MainWindow", "TextLabel"))
 
     def init_cur_stock(self, sInd):
         self._currentStock = sInd
@@ -127,6 +128,8 @@ class Ui_MainWindow(object):   # this is inheritance from object
 
 
 if __name__ == "__main__":
+    ''' the below code is for testing only '''
+
     import sys
     app = QtWidgets.QApplication(sys.argv)
     MainWindow = QtWidgets.QMainWindow()
